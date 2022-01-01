@@ -1,0 +1,140 @@
+BITS 64
+
+section .text
+
+global memcpy
+
+memcpy:
+	CLD
+	MOV RAX, RDI
+	MOV RCX, RDX
+
+	REP MOVSB
+
+	RET
+
+global memmove
+
+memmove:
+	CLD
+	MOV RAX, RDI
+	MOV RCX, RDX
+
+	CMP RSI, RDI
+	JGE .L0
+
+	ADD RDI, RCX
+	ADD RSI, RCX
+
+	STD
+	REP MOVSB
+
+	JMP .L1
+.L0:
+	REP MOVSB
+.L1:
+	RET
+
+global memset
+
+memset:
+	CLD
+	MOV R8, RDI
+	MOV RCX, RDX
+	MOV RAX, RSI
+
+	REP STOSB
+
+	MOV RAX, R8
+
+	RET
+
+global memmem_kronos
+
+memmem_kronos:
+	TEST RDX, RDX
+	JZ .NONE
+	TEST RCX, RCX
+	JZ .NONE
+
+	CLD
+
+	MOV R8, RSI
+	MOV R9, RCX
+	MOV R10, RDI
+	MOV RCX, RDX
+
+.LOOP:
+	MOV RSI, R8
+	MOV AL, BYTE [RSI]
+	MOV RCX, RDX
+
+	REPNE SCASB
+
+	DEC RDI
+	INC RCX
+
+	TEST RCX, RCX
+	JZ .NONE
+
+	CMP R9, RCX
+	JA .NONE
+
+	MOV RDX, RCX
+	MOV RCX, R9
+	MOV R10, RDI
+
+	REPE CMPSB
+
+	JNZ .CONT
+	JRCXZ .END
+.CONT:
+	DEC RDI
+	MOV RAX, RDI
+	SUB RAX, R10
+	SUB RDX, RAX
+
+	JMP .LOOP
+.NONE:
+	MOV RAX, 0
+	RET
+.END:
+	MOV RAX, R10
+	RET
+
+global memcmp
+
+memcmp:
+	CLD
+
+	MOV RCX, RDX
+
+	REPE CMPSB
+	DEC RDI
+	DEC RSI
+
+	MOV R8B, BYTE [RDI]
+	SUB R8B, BYTE [RSI]
+
+	MOVSX RAX, R8B
+
+	RET
+
+global strnlen
+
+strnlen:
+	CLD
+
+	MOV RCX, RSI
+	MOV AL, 0
+
+	REPNE SCASB
+
+	JNZ .L0
+	INC RCX
+.L0:
+
+	SUB RSI, RCX
+	MOV RAX, RSI
+
+	RET
