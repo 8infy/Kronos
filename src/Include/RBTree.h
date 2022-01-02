@@ -25,6 +25,11 @@ struct RBRoot
 };
 
 
+void RBInsert(struct RBRoot *root, struct RBNode *node, struct RBNode *parent, struct RBNode **victim);
+
+void RBErase(struct RBRoot *root, struct RBNode *node);
+
+
 static INLINE int RBColor(struct RBNode *node)
 {
 	return node == NULL ? RB_BLACK : (node->parent & 1);
