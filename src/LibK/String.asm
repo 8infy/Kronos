@@ -49,9 +49,9 @@ memset:
 
 	RET
 
-global memmem_kronos
+global memmem
 
-memmem_kronos:
+memmem:
 	TEST RDX, RDX
 	JZ .NONE
 	TEST RCX, RCX
