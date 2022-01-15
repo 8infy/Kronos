@@ -138,3 +138,23 @@ strnlen:
 	MOV RAX, RSI
 
 	RET
+
+global strlen
+
+strlen:
+	CLD
+
+	MOV RSI, 0xFFFFFFFFFFFFFFFF
+	MOV RCX, RSI
+	MOV AL, 0
+
+	REPNE SCASB
+
+	JNZ .L0
+	INC RCX
+.L0:
+
+	SUB RSI, RCX
+	MOV RAX, RSI
+
+	RET
