@@ -8,12 +8,12 @@
 
 #define container_of(ptr, T, member) ((T *) ((void *) ptr - offsetof(T, member)))
 
-static INLINE size_t min(size_t a, size_t b)
-{
-	return a > b ? b : a;
-}
+#define is_constexpr(x) __builtin_constant_p(x)
 
-static INLINE size_t max(size_t a, size_t b)
-{
-	return a > b ? a : b;
-}
+
+#define min(a, b) is_constexpr(a) && is_constexpr(b) ? ((a) < (b) ? (a) : (b)) :   \
+                  ({ typeof(a) ___ta = a, ___tb = b; ___ta < ___tb ? ___ta : ___tb; })
+
+
+#define max(a, b) is_constexpr(a) && is_constexpr(b) ? ((a) > (b) ? (a) : (b)) :   \
+                  ({ typeof(a) ___ta = a, ___tb = b; ___ta > ___tb ? ___ta : ___tb; })
