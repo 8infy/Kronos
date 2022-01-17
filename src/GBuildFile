@@ -35,6 +35,8 @@ let start   = uptime();
 	let obj = "../bin/" + cut(file, 0, 2) + hexof(hashof(src)) + ".o";
 
 	status = status + ($cc + " " + cflags + "-c " + src + " -o " + obj);
+
+	$"echo " &;
 }
 
 #foreach("asm")
@@ -43,6 +45,8 @@ let start   = uptime();
 	let obj = "../bin/" + cut(file, 0, 4) + hexof(hashof(src)) + ".o";
 
 	status = status + ($as + " " + asflags + src + " -o " + obj);
+
+	$"echo " &;
 }
 
 if(status > 0) {
