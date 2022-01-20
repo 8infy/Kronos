@@ -18,7 +18,7 @@ let cflags  = "-Wall -Wextra -Wno-unused -O3 -IInclude -pipe " +
               "-ffreestanding -fno-stack-protector -fno-pic "  +
               "-mno-80387 -mno-mmx -mno-3dnow -mno-sse "       +
               "-mno-sse2 -mno-red-zone -mcmodel=kernel "       +
-              "--target=x86_64-none-none ";
+              "--target=x86_64-none-none "                     ;
 
 let ldflags = "-TLinker.ld -nostdlib -z max-page-size=0x1000 " +
               "-static --target=x86_64-none-none ";

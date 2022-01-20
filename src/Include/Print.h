@@ -5,10 +5,16 @@
 
 #define LOG_MSG_SIZE 80
 
-#define LOG_NONE  0
-#define LOG_INFO  1
-#define LOG_WARN  2
-#define LOG_ERROR 3
+#define LOG_INFO  0
+#define LOG_WARN  1
+#define LOG_ERROR 2
+#define LOG_TRACE 3
+
+#define Info(fmt, ...) KPrint(LOG_INFO, fmt, __VA_ARGS__)
+#define Warn(fmt, ...) KPrint(LOG_WARN, fmt, __VA_ARGS__)
+#define Error(fmt, ...) KPrint(LOG_ERROR, fmt, __VA_ARGS__)
+#define Trace(fmt, ...) KPrint(LOG_TRACE, fmt, __VA_ARGS__)
+
 
 struct Log
 {
@@ -23,12 +29,6 @@ struct Log
 
 void Log(struct Log *log);
 
-void KPrint(const char *fmt, ...);
+void KPrint(int level, const char *fmt, ...);
 
 void KPut(const char *fmt, ...);
-
-void Info(const char *fmt, ...);
-
-void Warn(const char *fmt, ...);
-
-void Error(const char *fmt, ...);
