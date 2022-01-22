@@ -45,7 +45,7 @@ static inline void FmtPad(struct FormatCtx *ctx, struct FormatSpec *s, size_t co
 static void FmtWriteDec(struct FormatCtx *ctx, struct FormatSpec *s, uint64_t n, int neg)
 {
 	uint64_t r = 0;
-	int digits = neg ? 1 : 0;
+	int digits = neg ? 1 : (n == 0 ? 1 : 0);
 
 	while(n) {
 		r  = r * 10 + (n % 10);
@@ -59,6 +59,9 @@ static void FmtWriteDec(struct FormatCtx *ctx, struct FormatSpec *s, uint64_t n,
 
 	if(neg)
 		FmtPut(ctx, '-');
+
+	if(n == 0)
+		FmtPut(ctx, 0);
 
 	while(r) {
 		int digit = r % 10;
