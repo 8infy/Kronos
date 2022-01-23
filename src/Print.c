@@ -11,17 +11,17 @@ static struct Queue log_queue = (struct Queue) { NULL, sizeof(struct Log), 2000,
 
 static const char *log_messages[4] =
 {
-	"\x1B[92m[INFO]\x1B[0m  ",
-	"\x1B[93m[WARN]\x1B[0m  ",
-	"\x1B[92m[ERROR]\x1B[0m ",
-	"\x1B[92m[TRACE]\x1B[0m "
+	"\x1B[32;1m[INFO]\x1B[0m  ",
+	"\x1B[33;1m[WARN]\x1B[0m  ",
+	"\x1B[31;1m[ERROR]\x1B[0m ",
+	"\x1B[34;1m[TRACE]\x1B[0m "
 };
 
 
 static void PrintBuffer(const char *buf, size_t len)
 {
 #ifdef OUT_E9
-	while(--len)
+	while(len--)
 		Out8(0xE9, *(buf++));
 #endif
 }
@@ -32,7 +32,7 @@ static void FlushLogs()
 	int r = QueueConsume(&log_queue, &log);
 
 	do {
-		PrintBuffer(log_messages[log.type], 10);
+		PrintBuffer(log_messages[log.type], 20);
 		PrintBuffer(log.msg, log.len);
 
 		r = QueueConsume(&log_queue, &log);
