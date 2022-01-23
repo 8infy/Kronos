@@ -3,3 +3,4 @@ env/*
 
 !env/generate_img.sh
 !env/hyper.cfg
+!env/GBuildFile

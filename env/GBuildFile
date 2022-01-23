@@ -1,0 +1,12 @@
+let img    = "KRONOS.IMG";
+let qemu   = "qemu-system-x86_64";
+let qflags = "-M q35 -hda " + img + " ";
+
+#foreach_line("../src/KConfig")
+{
+	if(line == "OUT_E9") {
+		qflags = qflags + "-debugcon stdio ";
+	}
+}
+
+$"qemu-system-x86_64 " + qflags;
