@@ -29,6 +29,13 @@ let asflags = "-felf64 ";
 let status  = 0;
 let start   = uptime();
 
+#foreach_line("./KConfig")
+{
+	if(line[0] != "#") {
+		cflags = cflags + "-D" + line + " ";
+	}
+}
+
 #foreach("c")
 {
 	let src = dir + "/" + file;

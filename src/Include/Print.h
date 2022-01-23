@@ -10,10 +10,10 @@
 #define LOG_ERROR 2
 #define LOG_TRACE 3
 
-#define Info(fmt, ...) KPrint(LOG_INFO, fmt, __VA_ARGS__)
-#define Warn(fmt, ...) KPrint(LOG_WARN, fmt, __VA_ARGS__)
-#define Error(fmt, ...) KPrint(LOG_ERROR, fmt, __VA_ARGS__)
-#define Trace(fmt, ...) KPrint(LOG_TRACE, fmt, __VA_ARGS__)
+#define Info(...) KPrint(LOG_INFO, __VA_ARGS__)
+#define Warn(...) KPrint(LOG_WARN, __VA_ARGS__)
+#define Error(...) KPrint(LOG_ERROR, __VA_ARGS__)
+#define Trace(...) KPrint(LOG_TRACE, __VA_ARGS__)
 
 
 struct Log
@@ -22,8 +22,6 @@ struct Log
 
 	size_t  len : 62;
 	size_t type :  2;
-
-	size_t time;
 };
 
 

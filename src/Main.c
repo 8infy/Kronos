@@ -4,6 +4,7 @@
 
 void KernelInit()
 {
+	Info("Hello, world!\n");
 
 	while(1)
 		asm volatile("hlt");
