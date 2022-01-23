@@ -20,10 +20,7 @@ static const char *log_messages[4] =
 
 static void PrintBuffer(const char *buf, size_t len)
 {
-#ifdef OUT_E9
-	while(len--)
-		Out8(0xE9, *(buf++));
-#endif
+	
 }
 
 static void FlushLogs()

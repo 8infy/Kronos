@@ -1,2 +1,1 @@
-# This is for printing debug messages on QEMU port E9
-OUT_E9
+# Kernel macros and options will be specified here.
