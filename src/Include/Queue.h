@@ -16,17 +16,17 @@ struct Queue
 };
 
 
-static INLINE int QueueFull(struct Queue *q)
+static inline int QueueFull(struct Queue *q)
 {
 	return q->head == (q->tail + 1) % q->nmemb;
 }
 
-static INLINE int QueueEmpty(struct Queue *q)
+static inline int QueueEmpty(struct Queue *q)
 {
 	return q->head == q->tail;
 }
 
-static INLINE int QueueSubmit(struct Queue *q, void *item)
+static inline int QueueSubmit(struct Queue *q, void *item)
 {
 	if(q->head == (q->tail + 1) % q->nmemb) return 0;
 
@@ -38,7 +38,7 @@ static INLINE int QueueSubmit(struct Queue *q, void *item)
 	return 1;
 }
 
-static INLINE int QueueConsume(struct Queue *q, void *item)
+static inline int QueueConsume(struct Queue *q, void *item)
 {
 	if(q->head == q->tail) return 0;
 

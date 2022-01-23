@@ -1,27 +1,6 @@
 #include <RBTree.h>
 
 
-static INLINE void RBChildReplace(struct RBRoot *root, struct RBNode *node, struct RBNode *new)
-{
-	if(node == NULL) return;
-
-	if(new != NULL)
-		RBParentSet(new, RBParent(node));
-
-	int leaf = RBLeaf(node);
-
-	if(leaf == RB_LEFT) {
-		RBParent(node)->left = new;
-	} else if(leaf == RB_RIGHT) {
-		RBParent(node)->right = new;
-	} else {
-		root->node = new;
-
-		if(new != NULL)
-			new->parent = 0;
-	}
-}
-
 static void RBRotateLeft(struct RBRoot *root, struct RBNode *node)
 {
 	struct RBNode *parent = RBParent(node);

@@ -6,7 +6,7 @@
 
 #define PACKED __attribute__((packed))
 
-#define INLINE __attribute__((always_inline)) inline
+#define ALWAYS_INLINE __attribute__((always_inline)) inline
 
 #define container_of(ptr, T, member) ((T *) ((void *) ptr - offsetof(T, member)))
 
