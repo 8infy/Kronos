@@ -31,8 +31,8 @@ let start   = uptime();
 
 #foreach_line("./KConfig")
 {
-	if(line[0] != "#") {
-		cflags = cflags + "-D" + line + " ";
+	if(line[0] == "D") {
+		cflags = cflags + "-D" + cut(line, 1, 0) + " ";
 	}
 }
 

@@ -1,13 +1,16 @@
+#include <UltraProto.h>
 #include <stddef.h>
 #include <stdint.h>
 #include <Print.h>
 
-void KernelInit()
+void KernelInit(struct ultra_boot_context *boot_ctx, uint32_t magic)
 {
-	Info("Hello, world!\n");
-	Warn("Hello, world!\n");
-	Error("Hello, world!\n");
-	Trace("Hello, world!\n");
+	while(magic != ULTRA_MAGIC)
+		asm volatile("hlt");
+
+
+	
+
 
 	while(1)
 		asm volatile("hlt");
