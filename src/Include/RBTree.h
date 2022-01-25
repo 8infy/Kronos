@@ -69,3 +69,70 @@ static inline void RBColorSet(struct RBNode *node, int color)
 	if(node == NULL) return;
 	node->parent = (node->parent & ~1) | color;
 }
+
+
+static inline struct RBNode *RBLeftest(struct RBNode *node)
+{
+	if(node == NULL) return NULL;
+
+	while(node->left != NULL)
+		node = node->left;
+
+	return node;
+}
+
+static inline struct RBNode *RBRightest(struct RBNode *node)
+{
+	if(node == NULL) return NULL;
+
+	while(node->right != NULL)
+		node = node->right;
+
+	return node;
+}
+
+static inline struct RBNode *RBNext(struct RBNode *node)
+{
+	if(node == NULL) return NULL;
+
+	if(node->right != NULL) {
+		node = node->right;
+
+		while(node->left != NULL)
+			node = node->left;
+
+		return node;
+	}
+
+	if(RBLeaf(node) == RB_LEFT)
+		return RBParent(node);
+
+	do {
+		node = RBParent(node);
+	} while(RBLeaf(node) == RB_RIGHT);
+
+	return RBParent(node);
+}
+
+static inline struct RBNode *RBPrev(struct RBNode *node)
+{
+	if(node == NULL) return NULL;
+
+	if(node->left != NULL) {
+		node = node->left;
+
+		while(node->right != NULL)
+			node = node->right;
+
+		return node;
+	}
+
+	if(RBLeaf(node) == RB_RIGHT)
+		return RBParent(node);
+
+	do {
+		node = RBParent(node);
+	} while(RBLeaf(node) == RB_LEFT);
+
+	return RBParent(node);
+}
