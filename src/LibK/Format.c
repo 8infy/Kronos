@@ -61,8 +61,8 @@ static void FmtWriteDec(struct FormatCtx *ctx, struct FormatSpec *s, uint64_t n,
 	if(neg)
 		FmtPut(ctx, '-');
 
-	if(n == 0)
-		FmtPut(ctx, 0);
+	if(r == 0)
+		FmtPut(ctx, '0');
 
 	while(r) {
 		int digit = r % 10;
