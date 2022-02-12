@@ -157,15 +157,28 @@ void RBInsert(struct RBRoot *root, struct RBNode *node, struct RBNode *parent, s
 	if(*victim != NULL) {
 		// We are replacing node with *victim
 
-		node->parent = (*victim)->parent;
+		if(*victim == root->node) {
+			if(root->leftest == root->node)
+				root->leftest = node;
+			if(root->rightest == root->node)
+				root->rightest = node;
+		}
 
-		node->left  = (*victim)->left;
-		node->right = (*victim)->right;
+		node->parent = (*victim)->parent;
+		node->left   = (*victim)->left;
+		node->right  = (*victim)->right;
+
+		if(node->left != NULL)
+			RBParentSet(node->left, node);
+		if(node->right != NULL)
+			RBParentSet(node->right, node);
 
 		if(RBLeaf(*victim) == RB_LEFT)
 			parent->left = node;
-		if(RBLeaf(*victim) == RB_RIGHT)
+		else if(RBLeaf(*victim) == RB_RIGHT)
 			parent->right = node;
+		else
+			root->node = node;
 
 		return;
 	}
@@ -175,6 +188,8 @@ void RBInsert(struct RBRoot *root, struct RBNode *node, struct RBNode *parent, s
 		node->parent = 0;
 		node->left   = NULL;
 		node->right  = NULL;
+
+		root->leftest = root->rightest = node;
 
 		return;
 	}
@@ -192,7 +207,7 @@ void RBInsert(struct RBRoot *root, struct RBNode *node, struct RBNode *parent, s
 			RBColorSet(parent, RB_BLACK);
 			RBColorSet(aunt,   RB_BLACK);
 
-			if(g->parent == 0) return;
+			if(g->parent == 0) break;
 
 			RBColorSet(g, RB_RED);
 
@@ -220,9 +235,11 @@ void RBInsert(struct RBRoot *root, struct RBNode *node, struct RBNode *parent, s
 		}
 	}
 
+	root->leftest  = RBLeftest(root->leftest);
+	root->rightest = RBRightest(root->rightest);
 }
 
-void RBErase(struct RBRoot *root, struct RBNode *node)
+static void _RBErase(struct RBRoot *root, struct RBNode *node)
 {
 	struct RBNode *new    = NULL;
 	struct RBNode *parent = RBParent(node);
@@ -300,3 +317,24 @@ void RBErase(struct RBRoot *root, struct RBNode *node)
 	}
 }
 
+void RBErase(struct RBRoot *root, struct RBNode *node)
+{
+	int is_root = node == root->node;
+
+	if(!is_root) {
+		if(node == root->leftest)
+			root->leftest = RBParent(node);
+		if(node == root->rightest)
+			root->rightest = RBParent(node);
+	} else {
+		if(node == root->leftest)
+			root->leftest = NULL;
+		if(node == root->rightest)
+			root->rightest = NULL;
+	}
+
+	_RBErase(root, node);
+
+	root->leftest  =  RBLeftest(root->leftest  == NULL ? root->node :  root->leftest);
+	root->rightest = RBRightest(root->rightest == NULL ? root->node : root->rightest);
+}

@@ -1,8 +1,7 @@
 #pragma once
 
-#include <stddef.h>
-#include <stdint.h>
 #include <stdarg.h>
+#include <Types.h>
 
 
 //        Kronos String Format

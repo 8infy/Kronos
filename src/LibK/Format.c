@@ -1,6 +1,7 @@
 #include <Format.h>
 #include <Macros.h>
 #include <String.h>
+#include <Types.h>
 
 
 #define DIGIT(n) ((n) > 9 ? ((n) - 10) + 'A' : (n) + '0')

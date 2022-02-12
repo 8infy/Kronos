@@ -1,8 +1,7 @@
 #pragma once
 
 #include <Macros.h>
-#include <stddef.h>
-#include <stdint.h>
+#include <Types.h>
 
 
 struct Registers

@@ -1,8 +1,7 @@
 #pragma once
 
-#include <stddef.h>
-#include <stdint.h>
 #include <Macros.h>
+#include <Types.h>
 
 
 #define RB_BLACK 0
@@ -21,7 +20,9 @@ struct RBNode
 
 struct RBRoot
 {
-	struct RBNode *node;
+	struct RBNode     *node; // The root node
+	struct RBNode  *leftest; // The left-most node in the tree
+	struct RBNode *rightest; // The right-most node in the tree
 };
 
 

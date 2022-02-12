@@ -1,8 +1,7 @@
 #pragma once
 
-#include <stddef.h>
-#include <stdint.h>
 #include <Macros.h>
+#include <Types.h>
 
 
 static inline void Out8(uint16_t port, uint8_t data)

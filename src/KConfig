@@ -1,1 +1,6 @@
 # Kernel macros and options will be specified here.
+# Each line must only contain the option name and no stray whitespace / comments.
+
+
+# Enable debug console on QEMU
+PORT_E9

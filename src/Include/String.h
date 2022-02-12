@@ -1,7 +1,6 @@
 #pragma once
 
-#include <stddef.h>
-#include <stdint.h>
+#include <Types.h>
 
 
 void *memcpy(void *dest, const void *src, size_t n);
