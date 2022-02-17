@@ -11,10 +11,15 @@ if(argc == 2) {
 
 let img    = "KRONOS.IMG";
 let qemu   = "qemu-system-x86_64";
-let qflags = "-M q35 -hda " + img + " ";
+let qflags = "-M q35 -m 2G -hda " + img + " --no-reboot --no-shutdown ";
 
-#foreach_line("../src/KConfig")
+#foreach_line("./BootOpts")
 {
+    if(line == "PORT_E9") {
+        qflags = qflags + "--debugcon stdio ";
+    } if(line == "DEBUG_INTR") {
+        qflags = qflags + "-d int ";
+	}
 }
 
 $"qemu-system-x86_64 " + qflags;

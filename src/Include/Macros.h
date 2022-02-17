@@ -13,11 +13,15 @@
 #define unlikely(x) __builtin_expect(!!(x), 0)
 
 
+#define ASSERT_SIZE(T, size) _Static_assert(sizeof(T) == size, "Type " #T " must be " #size " bytes")
+
+#define ARRAY_SIZE(arr) (sizeof(arr) / sizeof(*arr))
+
 #define PACKED __attribute__((packed))
 
 #define ALWAYS_INLINE __attribute__((always_inline)) inline
 
-#define container_of(ptr, T, member) ((T *) ((void *) ptr - offsetof(T, member)))
+#define container_of(ptr, T, member) ((T *) ((void *) (ptr) - offsetof(T, member)))
 
 #define is_constexpr(x) __builtin_constant_p(x)
 
@@ -29,6 +33,11 @@
                   ({ typeof(a) ___ta = a, ___tb = b; ___ta > ___tb ? ___ta : ___tb; }))
 
 
-#define log2(x) (x == 0 ? -1 : 63 - __builtin_clzll(x))
+#define log2(x) (63 - __builtin_clzll((uint64_t)x))
+
+#define ceil(a, b) (is_constexpr(a) && is_constexpr(b) ? ((a) + (b) - 1) / (b) :          \
+                   ({ typeof(a) ___ta = a, ___tb = b; ((___ta) + (___tb) - 1) / (___tb) }))
+
+#define phys_offset(a) ((void *) (PHYS_BASE + (uintptr_t) a))
 
 #define hang() do { asm volatile("cli"); while(1) asm volatile("hlt"); } while(0)

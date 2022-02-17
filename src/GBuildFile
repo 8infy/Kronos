@@ -37,11 +37,13 @@ let start   = uptime();
 #foreach_line("./KConfig")
 {
 	if(lengthof(line) > 0) {
-
-		if(line[0] == "D") {
+		if(line[0] == "-") {
 			cflags = cflags + "-D" + cut(line, 1, 0) + " ";
 		}
 
+		if(line == "DEBUG") {
+			cflags = cflags + "-g -DDEBUG ";
+		}
 	}
 }
 

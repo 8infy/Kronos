@@ -58,13 +58,15 @@ static void FmtWriteDec(struct FormatCtx *ctx, struct FormatSpec *s, uint64_t n,
 	if(!s->front)
 		FmtPad(ctx, s, digits);
 
-	if(neg)
+	if(neg) {
 		FmtPut(ctx, '-');
+		digits--;
+	}
 
 	if(r == 0)
 		FmtPut(ctx, '0');
 
-	while(r) {
+	for(int i = 0; i < digits; i++) {
 		int digit = r % 10;
 		r /= 10;
 

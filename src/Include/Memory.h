@@ -13,8 +13,8 @@ struct SMInfo
 	size_t  phys_rsvd; // Reserved physical memory
 };
 
-void SMInfoGet(struct SMInfo *info);
 
+void SMInfoGet(struct SMInfo *info);
 
 // Page allocation functions
 

@@ -28,6 +28,8 @@ sudo mkdir ./image/boot
 sudo cp ./hyper.cfg  ./image/boot/hyper.cfg
 sudo cp ./KRONOS.BIN ./image/boot/KRONOS.BIN
 
+sleep 0.5
+
 sudo umount $LOOPPART
 sudo rmdir ./image
 
