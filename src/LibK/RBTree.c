@@ -183,11 +183,12 @@ void RBInsert(struct RBRoot *root, struct RBNode *node, struct RBNode *parent, s
 		return;
 	}
 
+	node->left   = NULL;
+	node->right  = NULL;
+
 	if(parent == NULL) {
 		root->node   = node;
 		node->parent = 0;
-		node->left   = NULL;
-		node->right  = NULL;
 
 		root->leftest = root->rightest = node;
 
