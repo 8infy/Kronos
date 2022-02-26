@@ -336,6 +336,8 @@ void RBErase(struct RBRoot *root, struct RBNode *node)
 
 	_RBErase(root, node);
 
+	*node = (struct RBNode) { 0 };
+
 	root->leftest  =  RBLeftest(root->leftest  == NULL ? root->node :  root->leftest);
 	root->rightest = RBRightest(root->rightest == NULL ? root->node : root->rightest);
 }

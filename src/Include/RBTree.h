@@ -47,6 +47,14 @@ static inline int RBLeaf(struct RBNode *node)
 	return parent == NULL ? 0 : (parent->left == node ? RB_LEFT : RB_RIGHT);
 }
 
+static inline struct RBNode **RBAsChild(struct RBRoot *root, struct RBNode *node)
+{
+	if(node == NULL) return NULL;
+	if(RBParent(node) == NULL) return &root->node;
+
+	return RBLeaf(node) == RB_LEFT ? &RBParent(node)->left : &RBParent(node)->right;
+}
+
 static inline struct RBNode *RBSibling(struct RBNode *node)
 {
 	struct RBNode *parent = RBParent(node);

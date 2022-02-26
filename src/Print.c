@@ -5,6 +5,8 @@
 #include <Print.h>
 #include <Ports.h>
 
+#define ANSI_COLOR
+
 
 enum LogCaps
 {
@@ -18,12 +20,41 @@ static enum LogCaps log_caps = LOGCAP_NONE;
 
 static const char *log_messages[] = {
 	"        ",
+#ifdef ANSI_COLOR
 	"\x1B[32;1m[INFO]\x1B[0m  ",
 	"\x1B[33;1m[WARN]\x1B[0m  ",
 	"\x1B[31;1m[ERROR]\x1B[0m ",
 	"\x1B[34;1m[TRACE]\x1B[0m ",
+#else
+	"[INFO]  ",
+	"[WARN]  ",
+	"[ERROR] ",
+	"[TRACE] ",
+#endif
 };
 
+
+#define COM1 0x3F8
+
+static void SerialInit()
+{
+	Out8(COM1 + 1, 0x00);
+	Out8(COM1 + 3, 0x80);
+	Out8(COM1 + 0, 0x03);
+	Out8(COM1 + 1, 0x00);
+	Out8(COM1 + 3, 0x03);
+	Out8(COM1 + 2, 0xC7);
+	Out8(COM1 + 4, 0x0B);
+	Out8(COM1 + 4, 0x1E);
+	Out8(COM1 + 0, 0xAE);
+
+	if(In8(COM1 + 0) != 0xAE)
+		Panic("Serial is fucked\n");
+
+	Out8(COM1 + 4, 0x0F);
+
+	log_caps |= LOGCAP_SERIAL;
+}
 
 static void LogOut(const char *buf, size_t len)
 {
@@ -31,12 +62,24 @@ static void LogOut(const char *buf, size_t len)
 		for(size_t i = 0; i < len; i++)
 			Out8(0xE9, buf[i]);
 	}
+	if(log_caps & LOGCAP_SERIAL) {
+		for(size_t i = 0; i < len; i++) {
+			while((In8(COM1 + 5) & 0x20) == 0) asm volatile("nop");
+
+			Out8(COM1, buf[i]);
+		}
+	}
 }
 
 
 void LogInit()
 {
 	log_caps |= In8(0xE9) == 0xE9 ? LOGCAP_OUT_E9 : 0;
+
+	SerialInit();
+
+	if(log_caps & LOGCAP_SERIAL)
+		log_caps &= ~LOGCAP_OUT_E9;
 }
 
 void Print(int level, const char *fmt, ...)
@@ -55,7 +98,12 @@ void Print(int level, const char *fmt, ...)
 		len = 128;
 	}
 
+#ifdef ANSI_COLOR
 	LogOut(log_messages[level], level == 0 ? 8 : 20);
+#else
+	LogOut(log_messages[level], 8);
+#endif
+
 	LogOut(buf, len);
 }
 
@@ -75,7 +123,11 @@ void Put(const char *fmt, ...)
 
 void Panic(const char *fmt, ...)
 {
-	Put("\x1B[34;1m#!# \x1B[31;1mKernel Panic: \x1B[34m");
+#ifdef ANSI_COLOR
+	Put("\x1B[34;1m#!# \x1B[31;1mKernel Panic: \x1B[36m");
+#else
+	Put("#!# Kernel Panic: ");
+#endif
 
 	{
 		char buf[128] = { 0 };
@@ -90,5 +142,11 @@ void Panic(const char *fmt, ...)
 		LogOut(buf, len);
 	}
 
-	Put("\x1B[34;1m#!#\n");
+#ifdef ANSI_COLOR
+	Put(" \x1B[34;1m#!#\n\x1B[0m");
+#else
+	Put(" #!#\n");
+#endif
+
+	hang();
 }

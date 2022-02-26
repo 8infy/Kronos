@@ -8,31 +8,32 @@
 
 #define PMBLOCK(rbnode) container_of(rbnode, struct PMBlock, node)
 
-#define PMBLOCK_END(blk) (blk->start * 4096 + (1ULL << blk->order) * 4096)
+#define FROM_PAGE(x) ((x) * 4096ULL)
 
-#define PMBLOCK_START(blk) (blk->start * 4096)
+#define BLK_PER_PAGE (4096ULL / sizeof(struct PMBlock))
 
+#define BLK_MAX_SIZE 4194304ULL
 
-#define PMFLAGS_FREE 0
-#define PMFLAGS_USED 1
-#define PMFLAGS_NODE 2
 
 struct PMBlock
 {
 	struct RBNode node;
-	uint64_t     start : 32;
-	uint64_t     order :  6;
-	uint64_t     flags :  2;
-	uint64_t      rsvd : 24;
-};
+	uint64_t     start : 36; // (physical_addr / 4096)
+	uint64_t      size : 22; // (size_in_bytes / 4096 - 1)
+	uint64_t       ind :  1; // If this bit is set, start is an index to another PMBlock
+	uint64_t      rsvd :  5; // Reserved
+} __attribute__((packed, aligned(8)));
 
 ASSERT_SIZE(struct PMBlock, 32);
 
 struct PMAllocator
 {
-	struct RBRoot     tree;
-	size_t     buddy_count;
-	size_t     alloc_count;
-	size_t      rsvd_count;
-};
+	struct RBRoot  free; // Free node tree
+	struct RBRoot  used; // Used node tree
+	struct RBRoot patch; // Patch node tree
 
+	struct PMBlock *blk; // First block
+	size_t    blk_count; // Block count
+	size_t      blk_ind; // Indirect block count
+	size_t      blk_cap; // Block capacity
+};

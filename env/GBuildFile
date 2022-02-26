@@ -19,6 +19,8 @@ let qflags = "-M q35 -m 2G -hda " + img + " --no-reboot --no-shutdown ";
         qflags = qflags + "--debugcon stdio ";
     } if(line == "DEBUG_INTR") {
         qflags = qflags + "-d int ";
+	} if(line == "PORT_COM1") {
+        qflags = qflags + "-serial stdio ";
 	}
 }
 

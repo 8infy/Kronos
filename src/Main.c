@@ -37,5 +37,13 @@ void KernelInit(struct ultra_boot_context *boot_ctx, uint32_t magic)
 
 	PMInit(mmap);
 
+	struct SMInfo info;
+	SMInfoGet(&info);
+
+	Info("SMInfo:    Total memory: %u MiB\n", info.phys_total / 1048576);
+	Info("SMInfo:     Free memory: %u MiB\n", info.phys_free  / 1048576);
+	Info("SMInfo:     Used memory: %u KiB\n", info.phys_used  / 1024);
+	Info("SMInfo: Reserved memory: %u MiB\n", info.phys_rsvd  / 1048576);
+
 	hang();
 }
