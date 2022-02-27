@@ -3,6 +3,7 @@
 #include <Memory.h>
 #include <Types.h>
 #include <Print.h>
+#include <Core.h>
 
 
 void PMInit(struct ultra_memory_map_attribute *mmap);
@@ -36,6 +37,8 @@ void KernelInit(struct ultra_boot_context *boot_ctx, uint32_t magic)
 	Info("Kernel total    size: %uB\n", kinfo->range_length);
 
 	PMInit(mmap);
+	GDTLoad();
+
 
 	struct SMInfo info;
 	SMInfoGet(&info);
