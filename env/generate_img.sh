@@ -10,6 +10,8 @@ then
 	exit
 fi
 
+nm -n ./KRONOS.BIN | awk '/ T / {print $1,$3} / t / {print $1, $3}' | python3 genkmap.py
+
 dd if=/dev/zero bs=1M count=0 seek=128 of=./KRONOS.IMG
 
 parted -s KRONOS.IMG mklabel msdos
@@ -25,6 +27,7 @@ sudo mkdir -p ./image
 sudo mount $LOOPPART --target ./image
 sudo mkdir ./image/boot
 
+sudo cp ./kmap.bin  ./image/boot/kmap.bin
 sudo cp ./hyper.cfg  ./image/boot/hyper.cfg
 sudo cp ./KRONOS.BIN ./image/boot/KRONOS.BIN
 

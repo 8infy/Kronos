@@ -4,6 +4,7 @@
 #include <RBTree.h>
 #include <Macros.h>
 #include <Types.h>
+#include <Lock.h>
 
 
 #define PMBLOCK(rbnode) container_of(rbnode, struct PMBlock, node)
@@ -30,10 +31,10 @@ struct PMAllocator
 {
 	struct RBRoot  free; // Free node tree
 	struct RBRoot  used; // Used node tree
-	struct RBRoot patch; // Patch node tree
 
 	struct PMBlock *blk; // First block
 	size_t    blk_count; // Block count
 	size_t      blk_ind; // Indirect block count
 	size_t      blk_cap; // Block capacity
+	spinlock_t     lock; // Allocator lock
 };

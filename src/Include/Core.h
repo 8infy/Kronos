@@ -14,3 +14,13 @@ struct Processor
 
 
 void GDTLoad();
+
+void IDTLoad();
+
+
+static inline uint64_t FlagsGet()
+{
+	uint64_t flags = 0;
+	asm volatile("pushf\npop %0" : "=g"(flags));
+	return flags;
+}

@@ -15,8 +15,6 @@
 #define Trace(...) Print(LOG_TRACE, __VA_ARGS__)
 
 
-void LogInit();
-
 void Print(int level, const char *fmt, ...);
 
 void Put(const char *fmt, ...);

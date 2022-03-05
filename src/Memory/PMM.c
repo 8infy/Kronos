@@ -262,13 +262,15 @@ static void PMPageFree(struct PMBlock *blk)
 
 void SMInfoGet(struct SMInfo *info)
 {
+	SpinLock(&pmm.lock);
 	*info = sm_info;
+	SpinUnlock(&pmm.lock);
 }
 
 
 void PMInit(struct ultra_memory_map_attribute *mmap)
 {
-	size_t mmap_ent_count = MEMORY_MAP_ENTRY_COUNT(mmap->header);
+	size_t mmap_ent_count = ULTRA_MEMORY_MAP_ENTRY_COUNT(mmap->header);
 	size_t total_free     = 0;
 	size_t total_blocks   = 0;
 
@@ -281,21 +283,21 @@ void PMInit(struct ultra_memory_map_attribute *mmap)
 		struct ultra_memory_map_entry *ent = &mmap->entries[i];
 
 		if(ent->type != ULTRA_MEMORY_TYPE_INVALID)
-			sm_info.phys_total += ent->size_in_bytes;
+			sm_info.phys_total += ent->size;
 
 		if(ent->type != ULTRA_MEMORY_TYPE_FREE) {
-			sm_info.phys_rsvd += ent->size_in_bytes;
+			sm_info.phys_rsvd += ent->size;
 			continue;
 		}
 
-		total_free += ent->size_in_bytes;
+		total_free += ent->size;
 
 		if(ent->physical_address >= 1048576)
-			sm_info.phys_free += ent->size_in_bytes;
+			sm_info.phys_free += ent->size;
 
 		uint64_t start = ent->physical_address;
-		uint64_t end   = ent->physical_address + ent->size_in_bytes;
-		uint64_t size  = ent->size_in_bytes;
+		uint64_t end   = ent->physical_address + ent->size;
+		uint64_t size  = ent->size;
 
 		const char *unit = "B";
 		unit = (size / 1048576 > 0) ? "MiB" : "KiB";
@@ -316,13 +318,13 @@ void PMInit(struct ultra_memory_map_attribute *mmap)
 		if(ent->type != ULTRA_MEMORY_TYPE_FREE)
 			continue;
 
-		if(ent->size_in_bytes > total_blocks) {
+		if(ent->size > total_blocks) {
 			pmm.blk       = phys_offset(ent->physical_address);
 			pmm.blk_count = 0;
 			pmm.blk_cap   = total_blocks / 32;
 
 			ent->physical_address += total_blocks;
-			ent->size_in_bytes    -= total_blocks;
+			ent->size    -= total_blocks;
 
 			break;
 		}
@@ -337,7 +339,7 @@ void PMInit(struct ultra_memory_map_attribute *mmap)
 		if(ent->type != ULTRA_MEMORY_TYPE_FREE || ent->physical_address < 1048576)
 			continue;
 
-		size_t size  = ent->size_in_bytes    / 4096;
+		size_t size  = ent->size    / 4096;
 		size_t start = ent->physical_address / 4096;
 
 		while(size > 0) {
@@ -358,12 +360,19 @@ void PMInit(struct ultra_memory_map_attribute *mmap)
 
 uintptr_t PMAlloc(size_t npages)
 {
+	SpinLock(&pmm.lock);
+
 	struct PMBlock *blk = PMPageAlloc(npages);
+
+	SpinUnlock(&pmm.lock);
+
 	return blk == NULL ? 0 : FROM_PAGE(blk->start);
 }
 
 void PMFree(uintptr_t addr)
 {
+	SpinLock(&pmm.lock);
+
 	struct RBNode *node     = pmm.used.node;
 	struct PMBlock *nodeblk = NULL;
 
@@ -384,6 +393,8 @@ void PMFree(uintptr_t addr)
 		Panic("Can't free page(s) at physical address %xl", FROM_PAGE(addr));
 
 	PMPageFree(PMBLOCK(node));
+
+	SpinUnlock(&pmm.lock);
 }
 
 static void PMPrint(struct RBRoot *tree)
