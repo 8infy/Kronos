@@ -85,7 +85,7 @@ static void SerialInit()
 	Out8(COM1 + 0, 0xAE);
 
 	if(In8(COM1 + 0) != 0xAE)
-		Panic("Serial is fucked\n");
+		return;
 
 	Out8(COM1 + 4, 0x0F);
 
@@ -120,10 +120,8 @@ void LogInit(struct ultra_module_info_attribute *kmap)
 
 	SerialInit();
 
-	if(log_caps & LOGCAP_SERIAL)
-		log_caps &= ~LOGCAP_OUT_E9;
-
-	Info("%xl\n", ksym);
+	if(log_caps & LOGCAP_OUT_E9)
+		log_caps &= ~LOGCAP_SERIAL;
 }
 
 void Print(int level, const char *fmt, ...)
